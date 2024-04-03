@@ -6,16 +6,16 @@
 
 # Install and configure HAproxy on my lb-01 server.
 sudo apt-get -y update
-apt-get -y install haproxy
+sudo apt-get -y install haproxy
 
 # edit config file
 server_config=\
 "
-frontend  besthor_frontend
+frontend adham-frontend
         bind *:80
         mode http
-        default_backend besthor_backend
-backend besthor_backend
+        default_backend adham-backend
+backend adham-backend
         balance roundrobin
         server 358602-web-01 3.85.54.100:80 check
         server 358602-web-02 54.157.140.134:80 check
