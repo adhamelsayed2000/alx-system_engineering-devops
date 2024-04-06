@@ -35,16 +35,11 @@ defaults
 
 frontend adham-frontend
         bind *:80
+        ## Listen for https
+        bind *:443 ssl crt /etc/haproxy/certs/www.adhamel-sayed.tech.pem
+        redirect scheme https code 301 if !{ ssl_fc }
         mode http
-        http-request redirect scheme https code 301 unless { ssl_fc }
-        http-request set-header X_Forwarded-Proto http
         default_backend adham-backend
-
-frontend adham-frontend-https
-        bind *:443 ssl crt /etc/haproxy/certs/adhamel-sayed.tech.pem
-        http-request set-header X-Forwarded-Proto https
-        default_backend adham-backend
-
 backend adham-backend
         balance roundrobin
         server 358602-web-01 3.85.54.100:80 check
