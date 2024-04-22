@@ -1,31 +1,26 @@
 #!/usr/bin/python3
-"""Accessing a REST API for todo lists of employees"""
+"""Gather data from an API"""
 
 import requests
 import sys
 
 
-if __name__ == '__main__':
-    employeeId = sys.argv[1]
-    baseUrl = "https://jsonplaceholder.typicode.com"
-    url = baseUrl + "/" + employeeId
+if __name__ == "__main__":
+    # Define the URL for the REST API
+    url = "https://jsonplaceholder.typicode.com/"
 
-    response = requests.get(url)
-    employeeName = response.json().get('name')
+    # send a GET request to retrieve user info
+    user = requests.get(url + "users/{}".format(sys.argv[1])).json()
 
-    todoUrl = url + "/todos"
-    response = requests.get(todoUrl)
-    tasks = response.json()
-    done = 0
-    done_tasks = []
+    # send a GET request to retrive the TODO list
+    todos = requests.get(url + "todos", params={"userId": sys.argv[1]}).json()
 
-    for task in tasks:
-        if task.get('completed'):
-            done_tasks.append(task)
-            done += 1
+    # filter completed TODO list and store titles in a list
+    completed = [t.get("title") for t in todos if t.get("completed") is True]
 
-    print("Employee {} is done with tasks({}/{}):"
-          .format(employeeName, done, len(tasks)))
+    # print employee's name, completed tasks & total no of tasks
+    print("Employee {} is done with tasks({}/{}):".format(
+        user.get("name"), len(completed), len(todos)))
 
-    for task in done_tasks:
-        print("\t {}".format(task.get('title')))
+    # print the titles of completed tasks with indentation
+    [print("\t {}".format(c)) for c in completed]
