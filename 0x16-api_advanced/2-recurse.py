@@ -27,5 +27,5 @@ def recurse(subreddit, hot_list=[], after=None):
 
         return recurse(subreddit, hot_list, after)
 
-    except:
+    except Exception:
         return None
